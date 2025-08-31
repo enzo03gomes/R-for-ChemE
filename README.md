@@ -15,7 +15,7 @@ The course is divided into 3 parts:
     In this section we will cover the key methods for experimental design, from basics such as factorial designs, to optimization with RSM and optimal designs for modeling.
 
 
-Each section comes with several RMD files, which you can open in RStudio or other IDE of your choice, a video lecture and several exercises for you to solve.
+Each section comes with several .Rmd files, which you can open in RStudio or other IDE of your choice, a video lecture and several exercises for you to solve.
 
 In the .Rmd files, you can read through all the topics covered in that section, as well as running example code by pressing the green button shown below:
 
@@ -39,7 +39,7 @@ Basic use of R:
 Data structures:
   -	Types and uses of data structures
   -	Generating data structures
-  -	Indexing, nesting and dimensions 
+  -	Indexing and dimensions 
   -	Named lists and matrices
 
 Operators and expressions:
