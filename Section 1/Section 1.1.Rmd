@@ -1,0 +1,370 @@
+---
+title: "Section 1.1: basics of R"
+author: "Enzo Gomes"
+date: "2025-08-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setting up the working directory
+
+The working directory is a folder in your computer that R fetches and saves files from. Setting it up in the beginning of your script can help keep things organized.
+
+In order to set up the working directory, you can use the command `setwd()`. In Windows it looks something like this:
+
+```{r}
+setwd("C:/Users/Your Name/Folder")
+```
+
+You'll notice that Windows uses backslashes `\` instead of forward slashes `/`, so it can be cumbersome to copy-paste the folder directory and then manually change every backslash. If you press `Ctrl + F`, a menu will pop-up at the top of your script:
+
+![](images/clipboard-4209746768.png)
+
+By pressing `All`, all `\` will be replaced by `/`.
+
+You can also get the current working directory by using the command `getwd()`.
+
+## Installing and using packages
+
+Packages are bundles of functions created to fulfill certain needs. For example, `readxl` adds functions that allow you to load `.xlsx` and `.xls` files directly into R.
+
+Packages are typically published in CRAN or GitHub, and each source has its own way of installing packages.
+
+From CRAN, the installation is pretty simple. All you need is the `install.packages()` command:
+
+```{r}
+install.packages("readxl")
+```
+
+However, in order to install a package from GitHub, you'll need a especial package `devtools`:
+
+```{r}
+install.packages("devtools")
+```
+
+Then, you can use the command `devtools::install_github()`. For example, the package `mdatools` by Sergey Kucheryavski ([Github repo](https://github.com/svkucheryavski/mdatools)) can be installed as follows:
+
+```{r}
+devtools::install_github("svkucheryavski/mdatools")
+```
+
+Note the `::` in the previous command. This specifies that the command `install_github()` is from the package `devtools`. If you simply run the command without specifying the package, you'll get an error `Error in install_github(): could not find function "install_github"`. It can be annoying to specify the package all the time, so an alternative is to load it into your environment so the commands are directly accessible:
+
+```{r}
+library(devtools)
+```
+
+At least as a beginner, you won't use `devtools` that often aside from installing packages, but things like `readxl` and `mdatools` are used so often that you might as well load them with `library()`.
+
+An alternative to loading packages with `library()` is to simply go into the `Packages` tab in RStudio and tick off the packages you want:
+
+![](images/clipboard-3278335046.png)
+
+## Finding help pages
+
+If you're struggling with using a function, you can typically find a help page that explains to you in detail what the function requires as an input, what the output is and how it is used in context. To find this page you can use `help()`, `?` or `??`.
+
+`help()` allows you to specify which package the function comes from, as well as many other parameters for the search. Let's say you're trying to find the help page for the `pca()` function of `mdatools`:
+
+```{r}
+help("pca", package = "mdatools")
+```
+
+This opens the help page as you wanted:
+
+![](images/clipboard-1037676942.png)
+
+The section `Description` details the purpose of the function; `Usage` and `Arguments` show what inputs can/should be used; `Details` provides details on how the function works, the principles behind it and especial care you must take when using it. Then, the section `Value` shows you the output of the function, and finally, `Examples` shows you how to use the function in context. Some help pages will have more sections, such as `Author(s)` and `References`.
+
+Similarly, the function `?` opens the same page, but requires the package to be already loaded.
+
+```{r}
+library(mdatools)
+?pca
+```
+
+Finally, if you don't know which package your function belongs to, or perhaps you don't even remember the name of the function, you can use a keyword search with `??`.
+
+## Data structures
+
+Data can be organized in several formats, aka. data structures. The main data structures are:
+
+-   Vector: a 1D sequence of values. These may be `numeric`, `integer`, `logical` (true or false), or `character` (i.e. words/sentences).
+
+-   Matrix: a 2D sequence of values. The individual elements may be `numeric`, `logical` , or `character` .
+
+-   List: similar to the vector, a list is a ordered sequence of objects. Note that in this case, an object may very well simply be a `numeric` , but it may also be a vector, matrix or even other lists.
+
+-   Data frame: similar to a matrix, but with more advanced methods for indexing. This structure will be discussed in a later lecture.
+
+To determine the class of a variable, you can use the command `class()`. For the example below, we will take a small dataset provided by `mdatools` to play with this command.
+
+```{r}
+data("simdata")
+class(simdata)
+```
+
+As you can see, the data set `carbs` is in a list format.
+
+## List indexing and visualization
+
+You can visualize the dataset (or any other variable) using `View()`:
+
+```{r}
+View(simdata)
+```
+
+As you can see, the list has 3 entries, namely `C`, `S` and `D`. You can learn about what each of these entries mean by running `?carbs`. If you want to work with only one of the entries, you might want to assign a new variable with that data.
+
+There are 3 main ways of pulling a single entry from a list:
+
+```{r}
+Conc = simdata[["c.conc"]]
+Conc = simdata$c.conc
+Conc = simdata[[1]]
+```
+
+Note that the `[["c.conc"]]` and `$c.conc` methods only work for named lists. You can check the names of a list by using `names()`:
+
+```{r}
+names(simdata)
+```
+
+The command `names()` can also be used to assign new names to a list. For example, we can change it to more descriptive names:
+
+```{r}
+names(simdata) = c("calibrationConcentration", "calibrationSpectra",
+                   "testSpectra", "wavelength", "testConcentration")
+```
+
+The command `c()` means concatenate, i.e. make a vector out of these elements.
+
+Note: variable assignment can be done using `=`, `<-` or `->`. I personally prefer `=`, but `<-` is also very common.
+
+## Vector indexing and generation
+
+Now lets take a closer look at vectors. Let's say we are interested in the wavelengths of the spectras:
+
+```{r}
+wvl = simdata$wavelength
+class(wvl)
+```
+
+Note how `class()` tells you the type of information stored in the vector.
+
+We can of course check the length of `wvl` using `length(wvl)`. We can also check the maximum and minimum values of our vector using `max()`, `min()` and `range()`. These commands can also be used for matrices.
+
+```{r}
+range(wvl)
+min(wvl)
+max(wvl)
+```
+
+Individual elements can be extracted using `[]`. For example, the first value of `wvl` is:
+
+```{r}
+wvl[1]
+```
+
+Vectors can be generated in many different ways, not just by extracting columns and rows from matrices. The most useful commands are:
+
+-   `c()` : concatenates all entries as a vector
+
+    ```{r}
+    v1 = c(1,2,3,4,5,6)
+    print(v1)
+    ```
+
+<!-- -->
+
+-   `a:b`: a sequence of all integers from `a` to `b`
+
+    ```{r}
+    v1 = 1:6
+    print(v1)
+    ```
+
+-   `seq()`: generates a sequence from `a` to `b` with steps of a given size
+
+    ```{r}
+    v2 = seq(1, 10, by = 2)
+    print(v2)
+    ```
+
+    Alternatively, you can also define how many total elements the vector has, and the output will have evenly space elements:
+
+    ```{r}
+    v2 = seq(1, 10, length.out = 7)
+    print(v2)
+    ```
+
+-   `rep()`: repeats a value a given number of times
+
+    ```{r}
+    v3 = rep(1, 4) 
+    print(v3)
+    ```
+
+    It can also output `logical` or `character`:
+
+    ```{r}
+    v4 = rep("text", 4) 
+    print(v4)
+    ```
+
+-   `vector()`: generates an empty vector of a given type
+
+    ```{r}
+    v5 = vector("numeric") 
+    print(v5)
+    ```
+
+    As you can see, it also has an undefined number of elements. This method of creating vectors is useful when you don't know how long the vector will be in the end. You can also use this command to create a vector with a predetermined length, if you'd like:
+
+    ```{r}
+    v6 = vector("numeric", length = 3)
+    print(v6)
+    ```
+
+## Matrix indexing and visualization
+
+Now lets take a closer look at our variable `Conc`. By running `class(Conc)` we see that it is a matrix. Just like in mathematics, matrices can have different numbers of rows and columns. We can find that information with the commands `dim()`, `nrow()` and `ncol()`:
+
+```{r}
+cat("Dimensions: \n")
+dim(Conc)
+
+cat("Number of rows: \n")
+nrow(Conc)
+
+cat("Number of columns: \n")
+ncol(Conc)
+```
+
+Furthermore, `length()` gives you the total number of entries:
+
+```{r}
+length(Conc)
+```
+
+We can see what the matrix looks like using `View()` or simply printing the matrix into the console. However, for very large matrices you might not be interested in seeing the *whole* matrix, in which case the commands `head()` and `tail()` will be useful.
+
+`head()` outputs the first few rows of the matrix:
+
+```{r}
+head(Conc)
+```
+
+By default, `head()` and `tail()` output 6 rows. If you want to change that number you can use:
+
+```{r}
+head(Conc, 3)
+```
+
+In many cases, you might want to use a single row or column of the matrix:
+
+```{r}
+firstRow = Conc[1,]
+firstColumn = Conc[,1]
+firstRowAndColumns = Conc[1, 1]
+```
+
+In other cases, you need a subsection of the matrix. For example, you might want the first column's first 7 values:
+
+```{r}
+Conc[1:7, 1]
+```
+
+Or perhaps the 1st, 5th and 7th values:
+
+```{r}
+Conc[c(1,5,7), 1]
+```
+
+You can also easily swap the order of rows/columns. For example, if you want the 2nd column to now be the first, you can use:
+
+```{r}
+Conc[, c(2,1,3)] |> head()
+```
+
+Note that matrices can be named, similar to lists. However, there's 3 options for naming matrices: `rownames()` for naming rows, `colnames()` for naming column and `names()` for naming each element of the matrix.
+
+We can see that `Conc` doesn't have element names, but it does have row and column names:
+
+```{r}
+cat("Entry names: \n")
+names(Conc)
+
+cat("\nColumn names: \n")
+colnames(Conc)
+
+cat("\nRow names: \n")
+rownames(Conc)
+```
+
+This also means that you can call individual rows, columns or even individual elements with:
+
+```{r}
+firstRow = Conc["T1",]
+firstColumn = Conc[,"C1"]
+firstRowAndColumns = Conc["T1", "C1"]
+```
+
+## Creating lists and matrices
+
+Just like you can create vectors with the command `vector()`, you can also create a new matrix using the command `matrix()`. For example, we can create a 2-by-2 matrix with first column (1,2) and second column (3,4) as follows:
+
+```{r}
+v = c(1,2,3,4)
+m = matrix(v, nrow = 2, ncol = 2)
+print(m)
+```
+
+Notice how `matrix()` takes in a vector and fills out a matrix of specified dimensions column by column. If you instead want to fill it row by row, you should use the `byrow` parameter:
+
+```{r}
+v = c(1,2,3,4)
+mRow = matrix(v, nrow = 2, ncol = 2, byrow = TRUE)
+print(mRow)
+```
+
+Note how this time the matrix has *rows* (1,2) and (3,4).
+
+Lists can be created using the function `list()`. For example, if you want to combine the matrices `m` and `mRow` into a list:
+
+```{r}
+l = list(m, mRow)
+print(l)
+```
+
+If you want to name the elements of the matrix directly, you can specify them directly in the `list()` command:
+
+```{r}
+l = list(matrix1 = m, matrix2 = mRow)
+print(l)
+```
+
+## Random Number Generation (RNG)
+
+In some cases you might want to create a vector of random numbers. R allows you to do this easily with functions like `rnorm()` and `runif()`, which sample a normal and uniform distribution, respectively. For example:
+
+```{r}
+normalRNG = rnorm(n = 10, mean = 0, sd = 2)
+print(normalRNG)
+```
+
+```{r}
+uniformRNG = runif(n = 10, min = -1, max = 1)
+print(uniformRNG)
+```
+
+Furthermore, sometimes it can be useful to have repeatability in RNG. For example, if you are generating a matrix of concentrations for an experiment, you probably want the concentrations to be the same every time you run the script.
+
+While the safest way of doing this is to save the generated matrix and load it each time (which we'll cover in the second part of this lecture), you can also set the RNG seed at the beginning using `set.seed()`. Each seed will provide a different set of RNG values. It is used as follows:
+
+```{r}
+set.seed(1)
+```

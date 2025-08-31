@@ -1,0 +1,241 @@
+---
+title: 'Section 1.2: operators and expressions'
+author: "Enzo Gomes"
+date: "2025-08-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Basic arithmetic and math expressions
+
+R allows you to perform mot common arithmetic operations with the `numeric` type. Furthermore, if the dimensions are compatible, element-wise vector and matrix calculations are also possible.
+
+Here's the most common operators:
+
+-   Addition (`+`):
+
+    ```{r}
+    #between scalars
+    cat("5 + 2 =\n")
+    5 + 2
+
+    #between vectors
+    v1 = c(1, 2, 3)
+    v2 = c(6, 5, 4)
+    v3 = rep(2, 3)
+    v4 = 4:6
+
+    cat("\nv1 + v2 = \n")
+    v1 + v2
+    cat("\nv3 + v4 = \n")
+    v3 + v4
+
+    #between matrices
+    m1 = cbind(v1, v2)
+    m2 = cbind(v3, v4)
+
+    cat("\nm1 + m2 = \n")
+    m1 + m2
+
+    #pay attention to dimensions
+    v5 = 6:9
+    cat("\nv4 and v5 have different lengths:\n")
+    v4 + v5
+
+    ```
+
+-   Subtraction (`-`):
+
+    ```{r}
+    #between scalars
+    cat("5 - 2 =\n")
+    5 - 2
+
+    #between vectors
+    cat("\nv1 - v2 = \n")
+    v1 - v2
+
+    #between matrices
+    cat("\nm1 - m2 = \n")
+    m1 - m2
+    ```
+
+-   Multiplication (`*`): note that when multiplying two matrices using `*`, you are in fact multiplying element-wise, which is very different from matrix multiplication (which we'll see in a moment).
+
+    ```{r}
+    #between scalars
+    cat("5 * 2 =\n")
+    5 * 2
+
+    #between vectors
+    cat("\nv1 * v2 = \n")
+    v1 * v2
+
+    #between matrices
+    cat("\nm1 * m2 = \n")
+    m1 * m2
+    ```
+
+-   Division (`/`):
+
+    ```{r}
+    #between scalars
+    cat("5 / 2 =\n")
+    5 / 2
+
+    #between vectors
+    cat("\nv1 / v2 = \n")
+    v1 / v2
+
+    #between matrices
+    cat("\nm1 / m2 = \n")
+    m1 / m2
+    ```
+
+-   Exponent (`^` and `exp()`): notice how a matrix to the power of a matrix returns the power of individual elements
+
+    ```{r}
+    #between scalars
+    cat("5 ^ 2 =\n")
+    5 ^ 2
+
+    #between vectors
+    cat("\nv1 ^ v2 = \n")
+    v1 ^ v2
+
+    #between matrices
+    cat("\nm1 ^ m2 = \n")
+    m1 ^ m2
+    ```
+
+    An exponential with Euler's Number as the base can be calculated using the `exp()` command:
+
+    ```{r}
+    #Euler's number:
+    cat("Euler's number = \n")
+    exp(1)
+
+    #exponential of a scalar
+    cat("\ne ^ 2 = \n")
+    exp(2)
+
+    #exponential of a vector
+    cat("\ne ^ v1 = \n")
+    exp(v1)
+
+    #exponential of a matrix
+    cat("\ne ^ m1 = \n")
+    exp(m1)
+    ```
+
+-   Logarithm (`log()`): by default, `log()` is natural base, therefore `log(exp(1)) == 1`. Bases can be specified by using the parameter `base`. Since logarithms of base 2 and 10 are also very common, the functions `log10()` and `log2()` are available.
+
+    ```{r}
+    #base can be specified 
+    cat("log_5(2) =\n")
+    log(2, base = 5)
+
+    #log of vectors
+    cat("\nlog(v1) = \n")
+    log(v1)
+
+    #log of matrices
+    cat("\nlog(m1) = \n")
+    log(m1)
+
+    ```
+
+    Vectors and matrices can also be used in the `base` parameter, as long as `x` has compatible dimensions:
+
+    ```{r}
+    #vector as log base
+    cat("log_v1 (v2) =\n")
+    log(v1, base = v2)
+
+    #matrix as log base
+    cat("\nlog_m1 (m2) =\n")
+    log(m1, base = m2)
+    ```
+
+-   Basic and inverse trigonometric functions (`sin()`, `asin()`, `cos()` `acos()`, `tan()`and `atan()`): similar to most other operators so far, trigonometric functions can be applied to scalars, vectors and matrices element-wise. The angle must be in radians.
+
+    ```{r}
+    sin(pi)
+    cos(c(pi/2, pi/4))
+    tan(pi)
+
+    asin(1)
+    acos(0.7)
+    atan(0.5i) #atan accepts imaginary and complex numbers
+    ```
+
+    Note how `sin(pi)` should technically be zero, but instead is a very small number. This is because trigonometric functions in R (and all programming languages) are approximations, although very faithful ones for most applications.
+
+-   Summation (`sum()`): adds all elements of a vector or matrix.
+
+    ```{r}
+    sum(v1)
+    sum(m1)
+    ```
+
+## Matrix and vector operations
+
+Although R is not designed for high-performance matrix operations (you might need `tensorflow` or `torch` packages for that), there are a few common operations available.
+
+-   Transpose (`t()`):
+
+    ```{r}
+    t(m1)
+    ```
+
+-   Multiplication (`%*%`):
+
+    ```{r}
+    #between matrices
+    cat("m1 * m2 =\n")
+    m1 %*% t(m2)
+
+    #also works between vectors and matrices
+    cat("\nv1 * m1 =\n")
+    v1 %*% m1
+
+    #as expected, order matters
+    cat("\nOrder matters: \nm1 * v1 = \n")
+    m1 %*% v1
+    ```
+
+-   Inverse (`solve()`): calculates the inverse of a matrix (which is equivalent to solving a set of linear equations xA = 0, hence the name *solve*). Only works in square matrices, no pseudo-inverse function is available in base R.
+
+    ```{r}
+    set.seed(1)
+    m3 = matrix(runif(3*3, -1, 1), 3, 3) #question: how does this line work?
+    solve(m3)
+    ```
+
+-   Determinant (`det()`): only square matrices have a computable determinant.
+
+    ```{r}
+    det(m3)
+    ```
+
+-   Row and column sums (`rowSums()` and `colSums()`):
+
+    ```{r}
+    rowSums(m1)
+    colSums(m1)
+    ```
+
+-   Cross product of two vectors (`crossprod()`):
+
+    ```{r}
+    crossprod(v1,v2)
+    ```
+
+It is also possible to create diagonal matrices using the command `diag()`:
+
+```{r}
+diag(1:4)
+```
