@@ -17,7 +17,7 @@ The course is divided into 3 parts:
 
 Each section comes with several RMD files, which you can open in RStudio or other IDE of your choice, a video lecture and several exercises for you to solve.
 
-In the RMD files, you can read through all the topics covered in that section, as well as running example code by pressing the green button shown below:
+In the .Rmd files, you can read through all the topics covered in that section, as well as running example code by pressing the green button shown below:
 
 <img width="699" height="258" alt="image" src="https://github.com/user-attachments/assets/360668b2-e3f5-4451-bdea-3aec5ab7fcd2" />
 
@@ -30,11 +30,11 @@ At the end of each part you will have the option to work in a small project to n
 
 ## Section 1 – basics of R
 Basic use of R:
-    -	Load packages from CRAN and GitHub
-    -	Help system
-    -	Load and store data from common file formats
-    -	Assigning variables
-    -	Comments
+   - Load packages from CRAN and GitHub
+   - Help system
+   - Load and store data from common file formats
+   - Assigning variables
+   - Comments
     
 Data structures:
   -	Types and uses of data structures
