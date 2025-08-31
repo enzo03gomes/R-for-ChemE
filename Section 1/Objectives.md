@@ -15,8 +15,8 @@ Data structures:
 ## Section 1.2 - Operators and expressions
 Operators and expressions:
 -	Arithmetic (+, -, *, /, ^)
--	Matrix operations (%*%, %^%, t())
--	Common math expressions (log(), exp(), sin(), cos(), tan(), mean(), colMeans(), rowMeans(), sd())
+-	Common math expressions (log(), exp(), sin(), cos(), tan(), asin(), acos(), atan(), sum())
+-	Matrix operations (%*%, t(), solve(), det(), qr(), rowSums(), colSums())
 
 ## Section 1.3 - loading and saving data
 Load and store data:
