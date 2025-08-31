@@ -9,7 +9,7 @@ Basic use of R:
 Data structures:
 -	Types and uses of data structures (vector, matrix, list, atomic types)
 -	Generating data structures (`c()`, `matrix()`, `list()`, `seq()`, `rep()`, `rnorm()`, `runif()`, `vector()`)
--	Indexing, nesting and dimensions (`length()`, `dim()`, `nrow()`, `ncol()`, `range()`, `min()`, `max()`, `head()`, `tail()`)
+-	Indexing and dimensions (`length()`, `dim()`, `nrow()`, `ncol()`, `range()`, `min()`, `max()`, `head()`, `tail()`)
 -	Named lists and matrices (`names()`, `colnames()`, `rownames()`)
 
 ## Section 1.2 - Operators and expressions
