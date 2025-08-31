@@ -1,8 +1,8 @@
-# Learning objectives
+# Section 1 - Learning objectives
+## Section 1.1 - fundamentals of R
 Basic use of R:
 -	Load packages from CRAN and GitHub
 -	Help system (?function, ??function, help(), view package)
--	Load and store data from R dataset, CSV, excel, RDS and common spectrometry file formats
 -	Assigning variables (=, <-, ->)
 -	Commenting (#, #----)
 
@@ -12,7 +12,15 @@ Data structures:
 -	Indexing, nesting and dimensions (length(), dim(), nrow(), ncol(), range(), min(), max(), head(), tail())
 -	Named lists and matrices (names(), colnames(), rownames())
 
+## Section 1.2 - Operators and expressions
 Operators and expressions:
 -	Arithmetic (+, -, *, /, ^)
 -	Matrix operations (%*%, %^%, t())
 -	Common math expressions (log(), exp(), sin(), cos(), tan(), mean(), colMeans(), rowMeans(), sd())
+
+## Section 1.3 - loading and saving data
+Load and store data:
+-	the `.rds` file format
+-	reading `excel` files (`.xlsx` and `.xls`)
+-	reading and writting `.csv` files
+-	reading spectral file formats (`.jdx` and `.spc`)
