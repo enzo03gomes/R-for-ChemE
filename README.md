@@ -132,7 +132,7 @@ Classification and clustering:
   -	Unsupervised classification: k-means clustering, FCM
   -	Comparing model performance (misclassification rate, sensitivity and specificity)
 
-- Variable selection:
+Variable selection:
   -	Importance of variable selection
   -	Common variable selection methods (Jack-knife, VIP, selectivity ratio)
 
