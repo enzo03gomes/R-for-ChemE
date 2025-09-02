@@ -1,0 +1,93 @@
+---
+title: 'Section 1.3: loading and saving data'
+author: "Enzo Gomes"
+date: "2025-08-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## .rds files
+
+`.rds` is a file format used to store R objects. This means that data saved in `.rds` format can be directly loaded into an R script without having to do conversions.
+
+Writing `.rds` files can be done using `saveRDS()`. For example, let's store the dataset `carbs` from `mdatools` into the working directory:
+
+```{r}
+library(mdatools)
+data("carbs")
+
+saveRDS(carbs, file = "carbs.rds")
+```
+
+To load the `.rds` file, we use `readRDS()`:
+
+```{r}
+rm(carbs) #clears the variable carbs from the environment
+carbs = readRDS("carbs.rds")
+```
+
+## .csv files
+
+`.csv` files store data tables and come in two varieties: coma-separated CSV and semicolon-separated CSV2. The difference is that in CSV the columns are separated by comas, while in CSV2 they are separated by semicolons.
+
+Matrices and vectors can be saved as CSV files using `write.csv()` or `write.csv2()`. For example, saving the matrix `C` from `carbs`:
+
+```{r}
+write.csv(carbs$C, file = "carbs.csv")
+```
+
+Note that leaving the parameter `file` empty simply writes the csv file to console:
+
+```{r}
+write.csv(carbs$C, file = "")
+```
+
+Reading `.csv` files is done using `read.csv()` or `read.csv2()`:
+
+```{r}
+Conc = read.csv("carbs.csv")
+print(Conc)
+```
+
+## .jdx files
+
+`.jdx` files are standardized file formats to store spectral data. You may use the package `readJDX` to read these file formats. For example, using the `fusel alcohol` dataset provided in the `Datasets` folder of this course\*:
+
+```{r}
+library(readJDX)
+pentanolIR = readJDX(file = "isobutyl alcohol.jdx")
+```
+
+When using `View(pentanolIR)` you'll see that `readJDX()` generates a table with 4 entries, `dataGuide`, `metadata`, `commentLines`, `1-propanol`. Taking a closer look at the `1-propanol` entry, we can find the wavenumber under `x` and the absorbance under `y`:
+
+```{r}
+wvn = propanolIR[[4]]$x
+absorbance = propanolIR[[4]]$y
+
+plot(absorbance ~ wvn,
+     type = "l", xlab = "wavenumber", ylab = "absorbance")
+```
+
+\* you need to save the `propanol.jdx` file to the current working directory in order for this demonstration to work.
+
+## Reading Excel files
+
+In base R there is no way of reading `.xlsx` or `.xls` files. However, the package `readxl` allows you to do just that. Unfortunately, there is no way of directly saving your data as `.xlsx` or `.xls` files.
+
+Reading Excel files is a bit more involved than the other file formats we've seen so far. For this demonstration, please save the file `waterDensity.xlsx` found in the `Datasets` folder of this course:
+
+```{r}
+library(readxl)
+waterDensity = read_excel("waterDensity.xlsx")
+View(waterDensity)
+```
+
+As you can see, the function `read_excel()` by default loads only the first sheet. If you want other sheets, such as the `units` sheet in this file, you can specify the name under the `sheet` parameter:
+
+```{r}
+waterDensity_units = read_excel("waterDensity.xlsx", sheet = "units")
+View(waterDensity_units)
+```
