@@ -1,0 +1,42 @@
+---
+title: "Section 1 Exercises"
+author: "Enzo Gomes"
+date: "2025-09-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1 - reformatting spectra dataset 
+
+Load all the `.jdx` files of the `fusel alcohols` dataset into individual variables. Then:
+
+1.  Find the units of the propanol IR spectra (e.g. is the y-axis in absorbance or transmittance?)
+
+2.  Isolate the spectra of each compound into new variables.
+
+3.  Compile all the spectra into a single variable. What type of data structure is best for this purpose?
+
+4.  Save the compiled spectra to a `.rds` file.
+
+## Exercise 2 - calculating rate constants
+
+The combustion reaction of heptane is described by the equation:
+
+$$
+C_7H_{16} + O_2 \rightarrow products
+$$
+
+The rate constant of this reaction follows the Arrhenius Equation with a pre-exponential factor of `5.25*10^-7` cm3/mol\*s and an activation energy of `181` kJ/mol ([NIST](https://kinetics.nist.gov/kinetics/Detail?id=1975SHA/DEN872:4)). Calculate the rate constant at: 410K, 420K and 430K.
+
+## Exercise 3 - calculating density with CEoS
+
+The density of carbon dioxide is well approximated by the Peng-Robinson EoS. The critical point is 304.2K and 7.38 MPa, and the acentric factor is 0.224 (table 2-106 of "Perry's Chemical Engineers Handbook" 9th edition).
+
+Calculate the compressibility factor and the density of CO2 under the conditions:
+
+1.  300K, and pressures 0.1 to 1.0 MPa (with steps of 0.1MPa)
+
+2.  450K and pressures 8.0, 9.0 and 10 MPa
