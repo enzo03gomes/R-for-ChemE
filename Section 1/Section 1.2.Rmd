@@ -181,6 +181,13 @@ Here's the most common operators:
     sum(m1)
     ```
 
+-   absolute (`abs()`): takes the absolute value of each element.
+
+    ```{r}
+    abs(v1)
+    abs(m1)
+    ```
+
 ## Matrix and vector operations
 
 Although R is not designed for high-performance matrix operations (you might need `tensorflow` or `torch` packages for that), there are a few common operations available.
