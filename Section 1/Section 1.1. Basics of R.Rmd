@@ -1,0 +1,351 @@
+---
+title: "Section 1.1: basics of R"
+author: "Enzo Gomes"
+date: "2025-08-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Why learn R?
+
+R is a programming language designed for statistical analysis. For this reason, R is very convenient when planning experiments and analyzing results.
+
+In this course we are going to learn the practical uses of statistical tools like ANOVA and MLR, as well as chemometrics tools for spectrometry, and how to plan an experiment with the aid of R. But before all of this, we will cover the basics of R, for example, we will study the different data structures (like vectors, matrices and lists) and how they can be used to represent different types of data.
+
+## .R vs .Rmd files
+
+As you have probably seen, there are 2 main file formats related to R, the `.R` and the `.Rmd` files. In `.R` files, you can store your code to be run whenever you want. This means that you can save your analysis pipeline (the sequence of processing or analysis methods to obtain information from a data set) and run different data through it, or run the same data at a later time.
+
+In contrast, `.Rmd` files like this one are more similar to a `.word` or `.pdf` file which stores text and images. The `.Rmd` file format has the advantage that you can also add snippets of `R` or `python` code, allowing you to organize and describe your analysis pipeline better.
+
+For this course, notes and exercises will be presented in `.Rmd` files, and solutions to the exercises will be presented in `.R` files in order to make them easier to run. You can solve the exercises in whichever file format you prefer, but unless otherwise stated, `.R` files will work just fine.
+
+## R Packages
+
+R packages are essentially a set of new functions created for a specific goal. Packages can make your analysis easier and more varied by providing you with more advanced tools without having to implement them yourself. For example, the package `readxl` adds functions that allow you to load data from an Excel file to R directly. Without this package, you'd first need to convert the `.xlsx` file to `.csv` and then load the data into your R script.
+
+This course will use several packages, primarily `readxl` (to load Excel files), `readJDX` (to load `.jdx` files) and `mdatools` (for chemometrics).
+
+Packages can be installed from two main sources, CRAN and GitHub. CRAN (aka. [C]{.underline}omprehensive [R]{.underline} [A]{.underline}rchive [N]{.underline}etwork) is the official source of R software. You probably installed R in your computer from the CRAN website. GitHub, on the other hand, is a place where people can openly share their programming projects, and chances are, you got this file from a GitHub repository. Similarly, a GitHub repository (aka. GitHub repo) can contain the files your computer needs to build a package.
+
+The way packages are installed depends on their source. For CRAN packages, you can simply use the `install.packages()` function. For example, to install the aforementioned `readxl` package:
+
+```{r}
+install.packages("readxl")
+```
+
+Installing packages from GitHub requires you to have a package called `devtools`, which is installed from CRAN:
+
+```{r}
+install.packages("devtools")
+```
+
+The package `devtools` gives you the function `install_github()`, which you can then use to install other packages. For example, the package `mdatools` by Sergey Kucheryavski ([Github repo](https://github.com/svkucheryavski/mdatools)) can be installed as follows:
+
+```{r}
+devtools::install_github("svkucheryavski/mdatools")
+```
+
+Note the `::` in the previous command. This specifies that the command `install_github()` is from the package `devtools`. If you simply run the command without specifying the package, you'll get an error `Error in install_github(): could not find function "install_github"`. It can be annoying to specify the package all the time, so an alternative is to load it into your environment so the commands are directly accessible:
+
+```{r}
+library(devtools)
+```
+
+At least as a beginner, you won't use `devtools` that often aside from installing packages, but things like `readxl` and `mdatools` are used so often that you might as well load them with `library()`.
+
+## Data structures
+
+Data can be organized in several formats, aka. data structures. The main data structures are:
+
+-   Vector: a 1D sequence of values. These may be any of the *atomic types* - `numeric`, `integer`, `logical` (true or false), or `character` (i.e. words/sentences). This is useful to store sequential data, like the temperature of a reactor over time, or the yield as concentration of a catalyst increases.
+
+-   Matrix: a 2D sequence of values. The individual elements may be any of the atomic types. Matrices can be used to store larger chunks of information, like a collection of spectra, or the different combinations of concentrations used for a given set of experimental runs.
+
+-   List: similar to the vector, a list is a ordered sequence of objects. Note that in this case, an object may very well simply be a `numeric` , but it may also be a vector, matrix or even other lists. This makes lists useful to compile different kinds of information in the same variable or data file, which we will cover in just a moment.
+
+-   Data frame: similar to a matrix, but with more advanced methods for indexing. This structure will be discussed in a later lecture when we talk about statistics and experimental design.
+
+For this lecture, we will be using the data set `dimdata` provided by the package `mdatools`. It can be loaded into R by using the command `data()`:
+
+```{r}
+library(mdatools)
+data("simdata")
+```
+
+The `data()` function provides default datasets, which can be helpful when testing your scripts before you actually receive your experiment's data. The dataset `simdata` contains two sets of hydrocarbon mixture spectra (calibration and test sets) , as well as the concentrations of each component.
+
+To determine the class of a variable, you can use the command `class()`:
+
+```{r}
+class(simdata)
+```
+
+As you can see, the data set `simdata` is in a list format. This is because, as we will see in a moment, this data set contains multiple vectors and matrices; and therefore the list format is a convenient way of storing all of it into a single variable.
+
+## List indexing and visualization
+
+You can visualize the dataset (or any other variable) using `View()`:
+
+```{r}
+View(simdata)
+```
+
+As you can see, the list has 5 entries, namely `conc.c`, `spectra.c`, `spectra.t`, `wavelength` and `conc.t`. You can learn about what each of these entries mean by running `?simdata`.
+
+If you want to work with only one of the entries, for example the concentrations in the calibration set, you might want to assign a new variable with that data. There are 3 main ways of pulling a single entry from a list:
+
+```{r}
+Conc = simdata[["c.conc"]]
+Conc = simdata$c.conc
+Conc = simdata[[1]]
+```
+
+Note that the `[["c.conc"]]` and `$c.conc` methods only work for named lists. You can check the names of a list by using `names()`:
+
+```{r}
+names(simdata)
+```
+
+The command `names()` can also be used to assign new names to a list. For example, we can change it to more descriptive names:
+
+```{r}
+names(simdata) = c("calibrationConcentration", "calibrationSpectra",
+                   "testSpectra", "wavelength", "testConcentration")
+```
+
+The command `c()` means concatenate, i.e. make a vector out of these elements.
+
+Note: variable assignment can be done using `=`, `<-` or `->`. I personally prefer `=`, but `<-` is also very common.
+
+## Vector indexing and generation
+
+Now lets take a closer look at vectors. Let's say we are interested in the wavelengths of the spectra:
+
+```{r}
+wvl = simdata$wavelength
+class(wvl)
+```
+
+Note how `class()` tells you the type of information stored in the vector.
+
+We can of course check the length of `wvl` using `length(wvl)`. We can also check the maximum and minimum values of our vector using `max()`, `min()` and `range()`. These commands can also be used for matrices.
+
+```{r}
+range(wvl)
+min(wvl)
+max(wvl)
+```
+
+Individual elements can be extracted using `[]`. For example, the first value of `wvl` is:
+
+```{r}
+wvl[1]
+```
+
+Vectors can be generated in many different ways, not just by extracting columns and rows from matrices. Generating your own vectors is useful when, for example, designing an experiment. If you want your experiment to have temperates of 100-200ºC every 10ºC, how will you express these values in R?
+
+The most useful functions for this are:
+
+-   `c()` : concatenates all entries as a vector (i.e. takes individual scalars and makes a vector with them)
+
+    ```{r}
+    v1 = c(1,2,3,4,5,6)
+    print(v1)
+    ```
+
+-   `a:b`: a sequence of all integers from `a` to `b`
+
+    ```{r}
+    v1 = 1:6
+    print(v1)
+    ```
+
+-   `seq()`: generates a sequence from `a` to `b` with steps of a given size
+
+    ```{r}
+    v2 = seq(1, 10, by = 2)
+    print(v2)
+    ```
+
+    Alternatively, you can also define how many total elements the vector has, and the output will have evenly spaced elements:
+
+    ```{r}
+    v2 = seq(1, 10, length.out = 7)
+    print(v2)
+    ```
+
+-   `rep()`: repeats a value a given number of times
+
+    ```{r}
+    v3 = rep(1, 4)
+    print(v3)
+    ```
+
+    It can also output `logical` or `character`:
+
+    ```{r}
+    v4 = rep("text", 4)
+    print(v4)
+    ```
+
+-   `vector()`: generates an empty vector of a given type
+
+    ```{r}
+    v5 = vector("numeric")
+    print(v5)
+    ```
+
+    As you can see, it also has an undefined number of elements. This method of creating vectors is useful when you don't know how long the vector will be in the end.This will occur mostly when running more complex algorithms, so we won't see this command for a while. You can also use this command to create a vector with a predetermined length, if you'd like:
+
+    ```{r}
+    v6 = vector("numeric", length = 3)
+    print(v6)
+    ```
+
+## Matrix indexing and visualization
+
+Now lets take a closer look at our variable `Conc`. By running `class(Conc)` we see that it is a matrix. Just like in mathematics, matrices can have different numbers of rows and columns. We can find that information with the commands `dim()`, `nrow()` and `ncol()`:
+
+```{r}
+cat("Dimensions: \n")
+dim(Conc)
+cat("Number of rows: \n")
+nrow(Conc)
+cat("Number of columns: \n")
+ncol(Conc)
+```
+
+Furthermore, `length()` gives you the total number of entries:
+
+```{r}
+length(Conc)
+```
+
+We can see what the matrix looks like using `View()` or simply printing the matrix into the console. However, for very large matrices you might not be interested in seeing the *whole* matrix, in which case the commands `head()` and `tail()` will be useful.
+
+`head()` outputs the first few rows of the matrix:
+
+```{r}
+head(Conc)
+```
+
+By default, `head()` and `tail()` output 6 rows. If you want to change that number you can use:
+
+```{r}
+head(Conc, 3)
+```
+
+In many cases, you might want to use a single row or column of the matrix:
+
+```{r}
+firstRow = Conc[1,]
+firstColumn = Conc[,1]
+firstRowAndColumns = Conc[1, 1]
+```
+
+In other cases, you need a subsection of the matrix. For example, you might want the first column's first 7 values:
+
+```{r}
+Conc[1:7, 1]
+```
+
+Or perhaps the 1st, 5th and 7th values:
+
+```{r}
+Conc[c(1,5,7), 1]
+```
+
+You can also easily swap the order of rows/columns. For example, if you want the 2nd column to now be the first, you can use:
+
+```{r}
+Conc[, c(2,1,3)] |> head()
+```
+
+Note that matrices can be named, similar to lists. However, there's 3 options for naming matrices: `rownames()` for naming rows, `colnames()` for naming column and `names()` for naming each element of the matrix.
+
+We can see that `Conc` doesn't have element names, but it does have row and column names:
+
+```{r}
+cat("Element names: \n")
+names(Conc)
+cat("\nColumn names: \n")
+colnames(Conc)
+cat("\nRow names: \n")
+rownames(Conc)
+```
+
+This also means that you can call individual rows, columns or even individual elements with:
+
+```{r}
+firstRow = Conc["T1",]
+firstColumn = Conc[,"C1"]
+firstRowAndColumns = Conc["T1", "C1"]
+```
+
+## Creating lists and matrices
+
+Just like you can create vectors with the command `vector()`, you can also create a new matrix using the command `matrix()`. For example, we can create a 2-by-2 matrix with first column (1,2) and second column (3,4) as follows:
+
+```{r}
+v = c(1,2,3,4)
+m = matrix(v, nrow = 2, ncol = 2)
+print(m)
+```
+
+Notice how `matrix()` takes in a vector and fills out a matrix of specified dimensions column by column. If you instead want to fill it row by row, you should use the `byrow` argument:
+
+```{r}
+v = c(1,2,3,4)
+mRow = matrix(v, nrow = 2, ncol = 2, byrow = TRUE)
+print(mRow)
+```
+
+Note how this time the matrix has *rows* (1,2) and (3,4). `R` also offers the function `diag()`, which allows you to create a diagonal matrix with a diagonal vector of your choosing:
+
+```{r}
+m = diag(1:5)
+print(m)
+```
+
+Lists can be created using the function `list()`. For example, if you want to combine the matrices `m` and `mRow` into a list:
+
+```{r}
+l = list(m, mRow)
+print(l)
+```
+
+If you want to name the elements of the matrix directly, you can specify them directly in the `list()` command:
+
+```{r}
+l = list(matrix1 = m, matrix2 = mRow)
+print(l)
+```
+
+Or name them afterwards using `names()`:
+
+```{r}
+l = list(m, mRow)
+names(l) = c("matrix1", "matrix2")
+```
+
+## Exercises
+
+1.  Generate a vector `v` containing all integers between 15 and 20
+    1.  What is the atomic type of `v`?
+    2.  Can you add a new element at the end of `v` containing the characters `"CatA"`? How does the atomic type change?
+    3.  Move the element `"CatA"` to the second position in `v`.
+    4.  How can you add a new element (e.g. `"CatB"`) to `v` between `"CatA"` and `"16"`?
+    5.  Is it possible to convert `v` into a `numeric` vector? Why?
+2.  Generate a diagonal matrix `m` with dimensions `5x5`, with the diagonal equaling all multiples of 5 between 5 and 30.
+    1.  What is the total length of `m`?
+    2.  Name the columns `C1` through `C5` and the rows `R1` through `R5`
+    3.  What is the element contained in the position (`C3`, `T3`)? Show all different methods of obtaining the answer.
+3.  Create a list containing `v` and `m`.
+    1.  Name the elements `1` and `2`.
+        1.  Can you extract the first element using the `$` method? Why or why not?
+    2.  Rename the elements to `v1` and `m2`
+    3.  Add another element containing the 3rd row of `m` and name it `v2`
