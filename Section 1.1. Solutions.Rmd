@@ -1,0 +1,226 @@
+---
+title: 'Section 1.1: Solutions'
+output: html_document
+date: "2025-09-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1
+
+**Generate a vector `v` containing all integers between 15 and 20:**
+
+This can be simply done by using the `a:b` function:
+
+```{r}
+v = 15:20
+```
+
+**What is the atomic type of `v`?**
+
+For vectors, the function `class()` outputs the atomic type of the vector:
+
+```{r}
+class(v)
+```
+
+**Can you add a new element at the end of `v` containing the characters `"CatA"`? How does the atomic type change?**
+
+The easiest way of doing this is to determine the length of `v` and assign a new element at the position `length(v) + 1`. This means you don't have to hard code the position of `"CatA"`:
+
+```{r}
+pos = length(v) + 1
+v[pos] = "CatA"
+
+print(v)
+```
+
+The assignment can also be shorted to a single line for compactness:
+
+```{r}
+v[length(v) + 1] = "CatA"
+
+print(v)
+```
+
+**Move the element `"CatA"` to the second position in `v`.**
+
+We could try to simply delete the last position and assign `"CatA"` to the 2nd position, but this would overwrite the value we already have in the 2nd element. Instead, we can split the vector into parts and reorder them:
+
+```{r}
+v1 = v[1] #the first element of v
+v2 = v[2:(length(v)-1)] #all elements after the 2nd, excluding "CatA"
+v3 = "CatA"
+
+v = c(v1, v3, v2)
+
+print(v)
+```
+
+Alternatively, we can reorder the vector by changing the element's indices:
+
+```{r}
+v = v[c(1,length(v), 2:(length(v)-1))]
+
+print(v)
+```
+
+Note how this is exactly the same as before, but now much more compact and without having to assign more variables.
+
+**How can you add a new element (e.g. `"CatB"`) to `v` between `"CatA"` and `"16"`?**
+
+This exercise follows the same principle as the previous. We first split the vector and then reassign it in the correct order:
+
+```{r}
+v1 = v[1:2] #this time, the first chunk includes elements 1 and 2
+v2 = v[-(1:2)] #the second chunk includes all elements except 1 and 2
+v3 = "CatB"
+
+v = c(v1, v3, v2)
+```
+
+And again, this can be done in a single line without assigning new variables:
+
+```{r}
+v = c(v[1:2], "CatB", v[-(1:2)])
+```
+
+**Is it possible to convert `v` into a `numeric` vector? Why?**
+
+Although we started out with a `integer` vector, which can be converted into `numeric`, we added `"CatA"` and `"CatB"`, which changed the whole vector to `character`, as we can see here:
+
+```{r}
+class(v)
+```
+
+This means that `v` cannot be directly converted to `numeric`, at least not without losing some information:
+
+```{r}
+as.numeric(v)
+```
+
+## Exercise 2
+
+**Generate a diagonal matrix `m` with dimensions `5x5`, with the diagonal equaling all multiples of 5 between 5 and 25.**
+
+We can use the command `diag()` to create a diagonal matrix from a vector. The vector we want is, in practice, `(5, 10, 15, 20, 25)`, which is easily created by using `seq()`:
+
+```{r}
+v_diag = seq(5, 25, by = 5)
+m = diag(v_diag)
+
+print(m)
+```
+
+**What is the total length of `m`?**
+
+Just use the `length()` function:
+
+```{r}
+length(m)
+```
+
+**Name the columns `C1` through `C6` and the rows `R1` through `R6`**
+
+Since we don't want to name individual elements, we should use the functions `colnames()` and `rownames()`. Regarding how to make the vectors `("C1", "C2", "C3", "C4", "C5")` and `("R1", "R2", "R3", "R4", "R5")`, there are two alternatives:
+
+1.  Hard code the values by writing them one by one:
+
+    ```{r}
+    colnames(m) = c("C1", "C2", "C3", "C4", "C5")
+    rownames(m) = c("R1", "R2", "R3", "R4", "R5")
+
+    print(m)
+    ```
+
+2.  Use the `paste0()` function to automatically paste The character to a integer vector:
+
+```{r}
+colnames(m) = paste0("C", 1:5)
+rownames(m) = paste0("R", 1:5)
+
+print(m)
+```
+
+**What is the element contained in the position (`C3`, `R3`)? Show all different methods of obtaining the answer.**
+
+Since our matrix `m` has both columns and rows named, we can call the desired element by calling the names of the column and row that it belongs to:
+
+```{r}
+m["R3", "C3"]
+```
+
+Alternatively, since we know that `"C3"` is the 3rd column and `"R3"` is the 3rd row, we can call those indices directly:
+
+```{r}
+m[3, 3]
+```
+
+## Exercise 3
+
+**Create a list containing `v` and `m`.**
+
+This is simple, we can just use the `list()` command:
+
+```{r}
+l = list(v,m)
+```
+
+**Name the list elements (`1`, `2`).**
+
+Since this is a list, we only have the option of naming the elements directly (lists don't have columns and rows like in matrices), so we use the function `names()`:
+
+```{r}
+names(l) = 1:2
+```
+
+Note how `names()` accepts an `integer` input but the names are automatically converted to `character`:
+
+```{r}
+class(names(l))
+```
+
+**Can you extract the first element using the `$` method? Why or why not?**
+
+Technically, yes. In practice, you need put the name inside ``` `` ```, since it starts with a number:
+
+```{r}
+l$`1` #this works fine
+l$1   #this doesn't work
+```
+
+**Rename the elements to `v1` and `m2`**
+
+Again, this is as simple as using `names()`:
+
+```{r}
+names(l) = c("v1", "m1")
+
+print(l)
+```
+
+**Add another element containing the 3rd row of `m` and name it `v2`**
+
+We can assign a new variable with the 3rd row of `m` and then add it to the list:
+
+```{r}
+v2 = m[3, ]
+l[[3]] = v2
+names(l)[3] = "v2"
+
+print(l)
+```
+
+Although, this can be shorted to a single line if we:
+
+1.  Assign `m[3, ]` directly to the list, without creating a new variable
+
+2.  Use `$` to directly name the new entry
+
+```{r}
+l$v2 = m[3, ]
+
+print(l)
+```
