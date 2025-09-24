@@ -340,12 +340,12 @@ names(l) = c("matrix1", "matrix2")
     3.  Move the element `"CatA"` to the second position in `v`.
     4.  How can you add a new element (e.g. `"CatB"`) to `v` between `"CatA"` and `"16"`?
     5.  Is it possible to convert `v` into a `numeric` vector? Why?
-2.  Generate a diagonal matrix `m` with dimensions `5x5`, with the diagonal equaling all multiples of 5 between 5 and 30.
+2.  Generate a diagonal matrix `m` with dimensions `5x5`, with the diagonal equaling all multiples of 5 between 5 and 25.
     1.  What is the total length of `m`?
     2.  Name the columns `C1` through `C5` and the rows `R1` through `R5`
-    3.  What is the element contained in the position (`C3`, `T3`)? Show all different methods of obtaining the answer.
+    3.  What is the element contained in the position (`R3`, `C3`)? Show all different methods of obtaining the answer.
 3.  Create a list containing `v` and `m`.
-    1.  Name the elements `1` and `2`.
+    1.  Name the list elements (`1`, `2`).
         1.  Can you extract the first element using the `$` method? Why or why not?
     2.  Rename the elements to `v1` and `m2`
     3.  Add another element containing the 3rd row of `m` and name it `v2`
