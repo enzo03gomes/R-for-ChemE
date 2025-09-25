@@ -22,5 +22,5 @@ Operators and expressions:
 Load and store data:
 -	the `.rds` file format
 -	reading `excel` files (`.xlsx` and `.xls`)
--	reading and writting `.csv` files
+-	reading and writing `.csv` files
 -	reading spectral file formats (`.jdx` and `.spc`)
